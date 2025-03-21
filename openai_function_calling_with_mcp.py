@@ -21,7 +21,7 @@ async def run_conversation():
         }
     ]
 
-    server = StdioServerParameters(command="python.exe", args=["mcp_server.py"])
+    server = StdioServerParameters(command="python", args=["mcp_server.py"])
     async with stdio_client(server) as (read, write):
         async with ClientSession(read, write) as mcp_client:
             await mcp_client.initialize()
