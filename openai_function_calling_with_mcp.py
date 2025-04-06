@@ -1,5 +1,4 @@
-from contextlib import asynccontextmanager
-from mcp import ClientSession, StdioServerParameters, stdio_client
+from mcp_client import McpClient
 from openai import OpenAI
 import os
 import json
@@ -13,15 +12,6 @@ client = OpenAI(
     api_key=os.getenv("OPENAI_API_KEY"), base_url=os.getenv("OPENAI_BASE_URL")
 )
 
-@asynccontextmanager
-async def get_mcp_client():
-    server = StdioServerParameters(command="python", args=["mcp_server.py"])
-    async with stdio_client(server) as (read, write):
-        async with ClientSession(read, write) as mcp_client:
-            await mcp_client.initialize()
-            yield mcp_client
-
-
 async def run_conversation():
     messages = [
         {
@@ -30,7 +20,7 @@ async def run_conversation():
         }
     ]
 
-    async with get_mcp_client() as mcp_client:
+    async with McpClient.get_mcp_client() as mcp_client:
         # Get available tools
         mcp_tools = await mcp_client.list_tools()
         tools = [
