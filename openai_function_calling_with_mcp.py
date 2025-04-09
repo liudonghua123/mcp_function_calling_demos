@@ -4,12 +4,15 @@ import os
 import json
 from dotenv import load_dotenv
 import asyncio
+import httpx
 
 load_dotenv()
 
 # Initialize OpenAI client with environment variables
 client = OpenAI(
-    api_key=os.getenv("OPENAI_API_KEY"), base_url=os.getenv("OPENAI_BASE_URL")
+    api_key=os.getenv("OPENAI_API_KEY"), 
+    base_url=os.getenv("OPENAI_BASE_URL"),
+    http_client=httpx.Client(verify=False)
 )
 
 async def run_conversation():
@@ -41,6 +44,7 @@ async def run_conversation():
             messages=messages,
             tools=tools,
             tool_choice="auto",
+            stream=False,
         )
 
         # Handle function calling
@@ -66,6 +70,7 @@ async def run_conversation():
                 messages=messages,
                 tools=tools,
                 tool_choice="auto",
+                stream=False,
             )
 
         print(response.choices[0].message.content)

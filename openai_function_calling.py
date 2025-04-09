@@ -2,13 +2,16 @@ from openai import OpenAI
 import os
 import json
 from utils import get_weather, get_current_datetime
+import httpx
 from dotenv import load_dotenv
 
 load_dotenv()
 
 # Initialize OpenAI client
 client = OpenAI(
-    api_key=os.getenv("OPENAI_API_KEY"), base_url=os.getenv("OPENAI_BASE_URL")
+    api_key=os.getenv("OPENAI_API_KEY"), 
+    base_url=os.getenv("OPENAI_BASE_URL"),
+    http_client=httpx.Client(verify=False)
 )
 
 # Define available functions
@@ -51,6 +54,7 @@ def run_conversation():
         messages=messages,
         tools=functions,
         tool_choice="auto",
+        stream=False,
     )
 
     # Handle function calling
@@ -76,6 +80,7 @@ def run_conversation():
             messages=messages,
             tools=functions,
             tool_choice="auto",
+            stream=False,
         )
 
     print(response.choices[0].message.content)

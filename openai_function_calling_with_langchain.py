@@ -2,6 +2,7 @@ from mcp_client import McpClient
 import os
 from dotenv import load_dotenv
 import asyncio
+import httpx
 from langchain_mcp_adapters.tools import load_mcp_tools
 from langchain_core.messages import HumanMessage, ToolMessage
 
@@ -9,7 +10,7 @@ from langchain_openai import ChatOpenAI
 
 load_dotenv()
 
-model = ChatOpenAI(model=os.getenv("OPENAI_MODEL_NAME"), api_key=os.getenv("OPENAI_API_KEY"), base_url=os.getenv("OPENAI_BASE_URL"))
+model = ChatOpenAI(model=os.getenv("OPENAI_MODEL_NAME"), api_key=os.getenv("OPENAI_API_KEY"), base_url=os.getenv("OPENAI_BASE_URL"), http_async_client=httpx.AsyncClient(verify=False), stream=False)
 
 async def run_conversation():
     async with McpClient.get_mcp_client() as session:
