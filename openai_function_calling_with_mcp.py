@@ -45,23 +45,21 @@ async def run_conversation():
 
         # Handle function calling
         while response.choices[0].finish_reason == "tool_calls":
-            tool_call = response.choices[0].message.tool_calls[0]
-            function_name = tool_call.function.name
-            arguments = json.loads(tool_call.function.arguments)
-
-            # Call MCP tool
-            function_response = await mcp_client.call_tool(
-                name=function_name, arguments=arguments
-            )
-
-            messages.append(response.choices[0].message)
-            messages.append(
-                {
-                    "role": "tool",
-                    "content": function_response.content[0].text,
-                    "tool_call_id": tool_call.id,
-                }
-            )
+            for tool_call in response.choices[0].message.tool_calls:
+                print(f"Tool call: {tool_call}")
+                function_name = tool_call.function.name
+                arguments = json.loads(tool_call.function.arguments)
+                # Call MCP tool
+                function_response = await mcp_client.call_tool(
+                    name=function_name, arguments=arguments
+                )
+                messages.append(
+                    {
+                        "role": "tool",
+                        "content": function_response.content[0].text,
+                        "tool_call_id": tool_call.id,
+                    }
+                )
 
             response = client.chat.completions.create(
                 model=os.getenv("OPENAI_MODEL_NAME"),

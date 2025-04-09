@@ -55,23 +55,21 @@ def run_conversation():
 
     # Handle function calling
     while response.choices[0].finish_reason == "tool_calls":
-        function_name = response.choices[0].message.tool_calls[0].function.name
-        arguments = json.loads(
-            response.choices[0].message.tool_calls[0].function.arguments
-        )
-
-        if function_name == "get_weather":
-            function_response = get_weather(arguments["city"])
-        elif function_name == "get_current_datetime":
-            function_response = get_current_datetime()
-
-        messages.append(
-            {
-                "role": "tool",
-                "content": json.dumps(function_response),
-                "tool_call_id": response.choices[0].message.tool_calls[0].id,
-            }
-        )
+        for tool_call in response.choices[0].message.tool_calls:
+            print(f"Tool call: {tool_call}")
+            function_name = tool_call.function.name
+            arguments = json.loads(tool_call.function.arguments)
+            if function_name == "get_weather":
+                function_response = get_weather(arguments["city"])
+            elif function_name == "get_current_datetime":
+                function_response = get_current_datetime()
+            messages.append(
+                {
+                    "role": "tool",
+                    "content": json.dumps(function_response),
+                    "tool_call_id": response.choices[0].message.tool_calls[0].id,
+                }
+            )
 
         response = client.chat.completions.create(
             model=os.getenv("OPENAI_MODEL_NAME"),
