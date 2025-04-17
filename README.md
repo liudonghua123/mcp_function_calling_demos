@@ -55,7 +55,15 @@ This repository contains several Python scripts demonstrating different approach
         *   Uses LangGraph's `create_react_agent` function. This function takes the model and tools and automatically creates an "agent" that handles the entire loop of receiving messages, deciding to call tools, executing them, and generating the final response.
         *   This significantly simplifies the code, as LangGraph manages the conversation flow and tool execution logic internally.
 
-## Requirements
+6.  **`openai_function_calling_with_openai_agent.py`**:
+    *   **Purpose**: Demonstrates using OpenAI function calling with the OpenAI Agent framework.
+    *   **How it works**:
+        *   Utilizes the OpenAI Agent to manage the tool-calling process.
+        *   Connects to the MCP server to access tools like `get_weather` and `get_current_datetime`.
+        *   The Agent automatically handles decision-making to call the necessary tools based on user queries.
+        *   Integrates seamlessly with the OpenAI API for a streamlined agent-based interaction.
+
+    ## Requirements
 
 *   Python 3.10 or newer
 *   An OpenAI API Key or OpenAI compatible LLM
